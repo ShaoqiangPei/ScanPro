@@ -145,17 +145,19 @@ public class CustScanActivity extends BaseCaptureActivity {
 
 }
 ```
-假如你项目中界面A需要集成定义扫描界面`CustScanActivity`.那么你需要如下几步处理：
-##### 2.1.添加用户相机权限
+假如你项目中`界面A`需要集成定义扫描界面`CustScanActivity`.那么你需要如下几步处理：
+##### 2.1 在Androidmanifast.xml中注册CustScanActivity
+你需要在你项目的`Androidmanifast.xml`中注册`CustScanActivity`以用于界面跳转。
+##### 2.2.添加用户相机权限
 在`界面A`中点击按钮时处理`打开相机`,`相册读写`权限等。涉及要修改的地方有`Androidmanifast.xml`,`fileprovider`以及`android6.0+用户手动权限`
 这里就不详细说明了。 
-##### 2.2 从界面A跳转到自定义扫描界面CustScanActivity
+##### 2.3 从界面A跳转到自定义扫描界面CustScanActivity
 然后在具备权限的情况下，你可以在`界面A`通过以下方法跳转到自定义扫描界面`CustScanActivity`：
 ```
 //跳转扫描界面
 BaseCaptureActivity.startAct(Context context,Class<?>cls);
 ```
-##### 2.3 自定义扫描界面CustScanActivity布局及扫描结果的处理
+##### 2.4 自定义扫描界面CustScanActivity布局及扫描结果的处理
 在自定义扫描界面`CustScanActivity`中实现`getContentArray()`方法，类似如下：
 ```
     @Override
@@ -205,7 +207,7 @@ BaseCaptureActivity.startAct(Context context,Class<?>cls);
         //...
     }
 ```
-##### 2.4 自定义扫描界面CustScanActivity其他几个方法的解释
+##### 2.5 自定义扫描界面CustScanActivity其他几个方法的解释
 - initView()：用于处理控件初始化
 - getSurfaceView():返回`SurfaceView`对象,必须返回，不能为`null`。即你在自定义扫描界面`CustScanActivity`中必须有一个`SurfaceView`控件
   在`initView()`初始化后，在此方法中返回`SurfaceView`对象
