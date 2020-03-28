@@ -19,13 +19,9 @@
 - getCodeResult(int resultCode, Intent data, OnScanResultListener listener)：当你界面A在调用完扫描界面并在关闭扫描界面后，想在界面A中接收
   扫描数据回传的时候，你可以在A界面的`onActivityResult(int requestCode, int resultCode, @Nullable Intent data)`中调用此方法，用于接收扫描回传值
 ##### 1.2 其他主要方法介绍
-- `handleDecode(Result rawResult, Bundle bundle)`和`handleDecode(String result)`方法，主要用于将扫描结果回传到界面A的处理，此处只做了解，具体处理
-  已经在 `BaseCaptureActivity`基类中完成。此方法只做了解即可，无需开发者调用。
-- `restartPreviewAfterDelay(long delayMS)`:重复扫描。此方法已在 `BaseCaptureActivity`内部处理，当开发这使用的是扫描完结果后仍停在扫描界面的模式时，
-  扫描框在获取到扫描完结果的2秒之后，继续恢复扫描功能。此方法只做了解即可，无需开发者调用。
-- `defaultInitCrop(ViewGroup preLayout,ViewGroup scanLayout)`:默认获取扫描二维码的尺寸(宽高),当你在自定义扫描界面的时候，可以考虑在自定义扫描界面
-  的`initCrop()`方法中调用此方法,具体使用可参照+++++++++,当然，你也可以在自定义扫描界面的`initCrop()`方法中自己实现获取扫描二维码的尺寸。当然，你也可以在
-  自定义的扫描界面的`initCrop()`中不做任何处理，这时，你获得的扫描结果中二维码尺寸(宽高)将为`0`。
+- `handleDecode(Result rawResult, Bundle bundle)`和`handleDecode(String result)`方法，主要用于将扫描结果回传到界面A的处理，此处只做了解，具体处理已经在 `BaseCaptureActivity`基类中完成。此方法只做了解即可，无需开发者调用。
+- `restartPreviewAfterDelay(long delayMS)`:重复扫描。此方法已在 `BaseCaptureActivity`内部处理，当开发这使用的是扫描完结果后仍停在扫描界面的模式时，扫描框在获取到扫描完结果的2秒之后，继续恢复扫描功能。此方法只做了解即可，无需开发者调用。
+- `defaultInitCrop(ViewGroup preLayout,ViewGroup scanLayout)`:默认获取扫描二维码的尺寸(宽高),当你在自定义扫描界面的时候，可以考虑在自定义扫描界面的`initCrop()`方法中调用此方法,具体使用可参照+++++++++,当然，你也可以在自定义扫描界面的`initCrop()`方法中自己实现获取扫描二维码的尺寸。当然，你也可以在自定义的扫描界面的`initCrop()`中不做任何处理，这时，你获得的扫描结果中二维码尺寸(宽高)将为`0`。
 - `Object[] getContentArray()`:虚拟方法，需要子类实现。传参及解释如下：
 ```
     /**
@@ -58,7 +54,23 @@
 - 在自定义扫描界面中，无需调用`onActivityResult(int requestCode, int resultCode, @Nullable Intent data)`方法处理相册数据回传问题，
 因为在`BaseCaptureActivity`中已做处理,开发者只需当`getContentArray()`方法中第二个参数为`false`(即扫描结果在扫描界面处理)的时候，在
 `scanSuccess(String result,int width,int height)`和`scanFailed(String result,int width,int height)`中做好`扫描成功`和`扫描失败`
-的逻辑处理即可。
+的逻辑处理即可。  
+在自定义扫描界面中也可能会使用到`BaseCaptureActivity`中的以下几个方法：
+```
+    /***
+     * 扫描动画
+     *
+     * @param view 扫描线的imageView
+     * @param duration 扫描时间间隔，单位毫秒，若duration<=0,则取默认时间间隔2500毫秒
+     */
+    public void scanAnimation(View view,int duration)
+    
+    /**打开相册**/
+    public void selectImage() 
+    
+    /**开启/关闭闪光灯**/
+    public void changeFlashLight()
+```
 #### 二.自定义扫描界面
 自定义扫描界面需要继承`BaseCaptureActivity`,以自定义扫描界面`CustScanActivity`为例，你可以像下面这样开始你的自定义扫描界面：
 ```
@@ -193,10 +205,15 @@ BaseCaptureActivity.startAct(Context context,Class<?>cls);
         //...
     }
 ```
+##### 2.4 自定义扫描界面CustScanActivity其他几个方法的解释
+- initView()：用于处理控件初始化
+- getSurfaceView():返回`SurfaceView`对象,必须返回，不能为`null`。即你在自定义扫描界面`CustScanActivity`中必须有一个`SurfaceView`控件
+  在`initView()`初始化后，在此方法中返回`SurfaceView`对象
+- initData():可在此方法中做初始化时数据的解基本处理，例如在定制界面`CaptureActivity`中此处做的是扫描动画处理
+- initCrop():用于处理获取扫描的二维码的尺寸逻辑，不写此方法的逻辑时，默认获取二维码尺寸为`0`
+- setListener():设置控件监听
+- onClick(View v):实现点击按键处理逻辑
+- noAlbumPermission():用户拒绝权限的方法中调用此方法。并在此方法中处理用户拒绝授权的逻辑
+- scanSuccess(String result, int width, int height)和scanFailed(String result, int width, int height)：当扫描界面在`getContentArray()`
+方法中第二个参数设置为`false`(即扫描结果的处理在扫描界面处理的时候)，用于做扫描结果成功或失败的处理
 
-
-  
-  
-  
-  
-  
