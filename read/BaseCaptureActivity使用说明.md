@@ -1,7 +1,8 @@
 ## BaseCaptureActivity使用说明
 
 ### 简介
-`BaseCaptureActivity`是一个扫描界面的基类，如果你需要自定义扫描界面，那么你可以直接继承它实现自己的扫描界面。
+`BaseCaptureActivity`是一个扫描界面的基类，如果你需要自定义扫描界面，那么你可以直接继承它实现自己的扫描界面。  
+若想在你的项目中快速接入扫描功能，可使用本库`定制版扫描界面`,具体接入可参考[CaptureActivity使用说明](https://github.com/ShaoqiangPei/ScanPro/blob/master/read/CaptureActivity%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.md)
 
 ### 使用说明
 #### 一.主要方法
@@ -21,7 +22,7 @@
 ##### 1.2 其他主要方法介绍
 - `handleDecode(Result rawResult, Bundle bundle)`和`handleDecode(String result)`方法，主要用于将扫描结果回传到界面A的处理，此处只做了解，具体处理已经在 `BaseCaptureActivity`基类中完成。此方法只做了解即可，无需开发者调用。
 - `restartPreviewAfterDelay(long delayMS)`:重复扫描。此方法已在 `BaseCaptureActivity`内部处理，当开发这使用的是扫描完结果后仍停在扫描界面的模式时，扫描框在获取到扫描完结果的2秒之后，继续恢复扫描功能。此方法只做了解即可，无需开发者调用。
-- `defaultInitCrop(ViewGroup preLayout,ViewGroup scanLayout)`:默认获取扫描二维码的尺寸(宽高),当你在自定义扫描界面的时候，可以考虑在自定义扫描界面的`initCrop()`方法中调用此方法,具体使用可参照+++++++++,当然，你也可以在自定义扫描界面的`initCrop()`方法中自己实现获取扫描二维码的尺寸。当然，你也可以在自定义的扫描界面的`initCrop()`中不做任何处理，这时，你获得的扫描结果中二维码尺寸(宽高)将为`0`。
+- `defaultInitCrop(ViewGroup preLayout,ViewGroup scanLayout)`:默认获取扫描二维码的尺寸(宽高),当你在自定义扫描界面的时候，可以考虑在自定义扫描界面的`initCrop()`方法中调用此方法,具体使用可参照[CaptureActivity代码](https://github.com/ShaoqiangPei/ScanPro/blob/master/scan/zxing/src/main/java/com/zxing/activity/CaptureActivity.java)中的`initCrop()`方法。当然,你也可以在自定义扫描界面的`initCrop()`方法中自己实现获取扫描二维码的尺寸。当然，你也可以在自定义的扫描界面的`initCrop()`中不做任何处理，这时，你获得的扫描结果中二维码尺寸(宽高)将为`0`。
 - `Object[] getContentArray()`:虚拟方法，需要子类实现。传参及解释如下：
 ```
     /**
