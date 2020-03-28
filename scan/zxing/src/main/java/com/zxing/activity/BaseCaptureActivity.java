@@ -360,6 +360,7 @@ public abstract class BaseCaptureActivity extends AppCompatActivity implements V
         builder.show();
     }
 
+    /**重复扫描**/
     public void restartPreviewAfterDelay(long delayMS) {
         if (handler != null) {
             handler.sendEmptyMessageDelayed(R.id.restart_preview, delayMS);

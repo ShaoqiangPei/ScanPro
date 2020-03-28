@@ -119,36 +119,6 @@ public class EncodingUtils {
         return bitmap;
     }
 
-
-    /**
-     * 生成条形码图片
-     * @param str 要往二维码中写入的内容,需要utf-8格式
-     * @param width 图片的宽
-     * @param height 图片的高
-     * @return 返回一个条形bitmap
-     */
-    public static Bitmap createBarCode(String str,int width, int height){
-        Bitmap bmapp= null;
-        try {
-            //条形码CODE_128
-            BarcodeFormat fomt=BarcodeFormat.CODE_128;
-            BitMatrix matrix=new MultiFormatWriter().encode(str, fomt, width, height);
-            int[] pixel=new int[matrix.getWidth()*matrix.getHeight()];
-            for(int i=0;i<height;i++){
-                for(int j=0;j<width;j++){
-                    if(matrix.get(j,i))
-                        pixel[i*width+j]=0xff000000;
-                }
-            }
-            bmapp = Bitmap.createBitmap(width,height,Bitmap.Config.ARGB_8888);
-            bmapp.setPixels(pixel, 0, width, 0, 0, width, height);
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
-        return bmapp;
-    }
-
-
     /**
      * 生成一维码
      *
@@ -158,7 +128,7 @@ public class EncodingUtils {
      * @param hasText 一维码底部是否显示文字。true:显示，false：不显示
      * @return bitmap
      */
-    public static Bitmap getBarcodeBitmap(String content, int qrWidth, int qrHeight,boolean hasText) {
+    public static Bitmap createBarCode(String content, int qrWidth, int qrHeight,boolean hasText) {
         content = content.trim();
         //文字的高度
         int mHeight = qrHeight / 5;

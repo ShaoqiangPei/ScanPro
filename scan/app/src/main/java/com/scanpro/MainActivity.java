@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void makeCode(){
-        String input="梁晶晶";
+        String input="我是奔跑的佩恩";
 
         Bitmap bitmaoLogo= BitmapFactory.decodeResource(getResources(),R.drawable.ic_test);
 //        Bitmap bitmap=EncodingUtils.createQRCode(input,mImvResult.getWidth(),mImvResult.getHeight(),bitmaoLogo);
@@ -82,9 +82,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void makeOp(){
-
-//        Bitmap bitmap=EncodingUtils.createBarCode("ABCD23456gejkek",500,200);
-        Bitmap bitmap=EncodingUtils.getBarcodeBitmap("ABCD23456gejkek",500,200,false);
+        Bitmap bitmap=EncodingUtils.createBarCode("ABCD23456gejkek",500,200,false);
         mImvResult.setImageBitmap(bitmap);
     }
 
