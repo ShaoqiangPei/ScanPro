@@ -267,9 +267,12 @@ public abstract class BaseCaptureActivity extends AppCompatActivity implements V
         inactivityTimer.onActivity();
         playEffect();
 
+        int width=mCropRect!=null?mCropRect.width():0;
+        int height=mCropRect!=null?mCropRect.height():0;
+
         Intent resultIntent = new Intent();
-        bundle.putInt(BaseCaptureActivity.CODE_WIDTH, mCropRect.width());
-        bundle.putInt(BaseCaptureActivity.CODE_HEIGHT, mCropRect.height());
+        bundle.putInt(BaseCaptureActivity.CODE_WIDTH, width);
+        bundle.putInt(BaseCaptureActivity.CODE_HEIGHT, height);
         bundle.putString(BaseCaptureActivity.CODE_RESULT, rawResult.getText());
         resultIntent.putExtras(bundle);
         if(isScanedFinish) {
@@ -278,9 +281,9 @@ public abstract class BaseCaptureActivity extends AppCompatActivity implements V
         }else{
             String result=rawResult.getText();
             if(TextUtils.isEmpty(result)){//扫描失败
-                scanFailed(result,mCropRect.width(),mCropRect.height());
+                scanFailed(result,width,height);
             }else{//扫描成功
-                scanSuccess(result,mCropRect.width(),mCropRect.height());
+                scanSuccess(result,width,height);
             }
             restartPreviewAfterDelay(2000);
         }
