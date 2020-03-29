@@ -1,4 +1,5 @@
-## ScanPro
+## ScanPro  
+[![](https://jitpack.io/v/ShaoqiangPei/ScanPro.svg)](https://jitpack.io/#ShaoqiangPei/ScanPro)
 
 ### 简介
 `ScanPro`是一个利用`zxing`封装实现二维码扫描及生成的工具库。
