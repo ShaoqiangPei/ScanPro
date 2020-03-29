@@ -138,8 +138,9 @@ public class EncodingUtils {
             hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
             hints.put(EncodeHintType.MARGIN, 1);
             BitMatrix result;
+            int barCodeHeight=0;
             try {
-                int barCodeHeight=qrHeight;
+                barCodeHeight=qrHeight;
                 if(hasText){
                     barCodeHeight=qrHeight-mHeight;
                 }
@@ -169,11 +170,11 @@ public class EncodingUtils {
                 paint.setColor(Color.BLACK);
                 paint.setFilterBitmap(true);
                 //字体大小
-                paint.setTextSize(mHeight);
+                paint.setTextSize(mHeight*7/12);
                 //开始绘制文本的位置
-                canvas.translate(width / 2, mHeight);
+                canvas.translate(width / 2, barCodeHeight+mHeight/2);
                 int textWidth= (int) paint.measureText(content);
-                canvas.drawText(content, 0, content.length(), -textWidth/2, height, paint);
+                canvas.drawText(content, 0, content.length(), -textWidth/2, 0, paint);
             }
             return bigBitmap;
         } catch (Exception e) {
