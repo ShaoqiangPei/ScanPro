@@ -10,17 +10,17 @@
 `BaseCaptureActivity`包含以下几个静态方法，便于开发者在使用的过程中调用：
 ```
     /**默认跳转**/
-    public static void startAct(Context context,Class<?>cls)
+    public static void startAct(Context context,Class<?>cls,int requestCode)
     
     /**获取二维码内容**/
-    public static void getCodeResult(int resultCode, Intent data, OnScanResultListener listener)
+    public static void getCodeResult(int requestCode,int resultCode, Intent data, OnScanResultListener listener)
 ```
-- startAct(Context context,Class<?>cls):当你项目中某个界面(如界面A)需要使用到扫描功能的时候，你可以在界面A通过点击按钮调用此方法跳转到`定制扫描
+- startAct(Context context,Class<?>cls,int requestCode):当你项目中某个界面(如界面A)需要使用到扫描功能的时候，你可以在界面A通过点击按钮调用此方法跳转到`定制扫描
   界面`或`自定义扫描界面`。当然， 前提是你已经在点击按钮的时候做过了扫描所需权限的处理。
-- getCodeResult(int resultCode, Intent data, OnScanResultListener listener)：当你界面A在调用完扫描界面并在关闭扫描界面后，想在界面A中接收
+- getCodeResult(int requestCode,int resultCode, Intent data, OnScanResultListener listener)：当你界面A在调用完扫描界面并在关闭扫描界面后，想在界面A中接收
   扫描数据回传的时候，你可以在A界面的`onActivityResult(int requestCode, int resultCode, @Nullable Intent data)`中调用此方法，用于接收扫描回传值
 ##### 1.2 其他主要方法介绍
-- `handleDecode(Result rawResult, Bundle bundle)`和`handleDecode(String result)`方法，主要用于将扫描结果回传到界面A的处理，此处只做了解，具体处理已经在 `BaseCaptureActivity`基类中完成。此方法只做了解即可，无需开发者调用。
+- `handleDecode(Result rawResult, Bundle bundle)`方法,主要用于将扫描结果回传到界面A的处理，此处只做了解，具体处理已经在 `BaseCaptureActivity`基类中完成。此方法只做了解即可，无需开发者调用。
 - `restartPreviewAfterDelay(long delayMS)`:重复扫描。此方法已在 `BaseCaptureActivity`内部处理，当开发这使用的是扫描完结果后仍停在扫描界面的模式时，扫描框在获取到扫描完结果的2秒之后，继续恢复扫描功能。此方法只做了解即可，无需开发者调用。
 - `defaultInitCrop(ViewGroup preLayout,ViewGroup scanLayout)`:默认获取扫描二维码的尺寸(宽高),当你在自定义扫描界面的时候，可以考虑在自定义扫描界面的`initCrop()`方法中调用此方法,具体使用可参照[CaptureActivity代码](https://github.com/ShaoqiangPei/ScanPro/blob/master/scan/zxing/src/main/java/com/zxing/activity/CaptureActivity.java)中的`initCrop()`方法。当然,你也可以在自定义扫描界面的`initCrop()`方法中自己实现获取扫描二维码的尺寸。当然，你也可以在自定义的扫描界面的`initCrop()`中不做任何处理，这时，你获得的扫描结果中二维码尺寸(宽高)将为`0`。
 - `Object[] getContentArray()`:虚拟方法，需要子类实现。传参及解释如下：
@@ -45,16 +45,16 @@
     protected abstract void noAlbumPermission();
 
     /**扫描成功返回的处理**/
-    protected abstract void scanSuccess(String result,int width,int height);
+    protected abstract void scanSuccess(int requestCode,String result,int width,int height);
     /**扫描失败返回的处理**/
-    protected abstract void scanFailed(String result,int width,int height);
+    protected abstract void scanFailed(int requestCode,String result,int width,int height);
 ```
 - 这里需要解释的是，在自定义扫描的界面中必须含有一个控件:`SurfaceView`,然后在`getSurfaceView()`中返回这个`SurfaceView`对象
 - 自定义扫描界面中涉及选择相册中二维码照片扫描功能的时候,若用户不授权相册权限，需要在拒绝授权的方法中调用`noAlbumPermission()`方法，
 然后在`noAlbumPermission()`方法中做无相册权限的处理
 - 在自定义扫描界面中，无需调用`onActivityResult(int requestCode, int resultCode, @Nullable Intent data)`方法处理相册数据回传问题，
 因为在`BaseCaptureActivity`中已做处理,开发者只需当`getContentArray()`方法中第二个参数为`false`(即扫描结果在扫描界面处理)的时候，在
-`scanSuccess(String result,int width,int height)`和`scanFailed(String result,int width,int height)`中做好`扫描成功`和`扫描失败`
+`scanSuccess(int requestCode,String result,int width,int height)`和`scanFailed(int requestCode,String result,int width,int height)`中做好`扫描成功`和`扫描失败`
 的逻辑处理即可。  
 在自定义扫描界面中也可能会使用到`BaseCaptureActivity`中的以下几个方法：
 ```
@@ -134,13 +134,13 @@ public class CustScanActivity extends BaseCaptureActivity {
     }
 
     @Override
-    protected void scanSuccess(String result, int width, int height) {
+    protected void scanSuccess(int requestCode,String result, int width, int height) {
         //扫描成功的处理
 
     }
 
     @Override
-    protected void scanFailed(String result, int width, int height) {
+    protected void scanFailed(int requestCode,String result, int width, int height) {
         //扫描失败的处理
     }
 
@@ -155,8 +155,9 @@ public class CustScanActivity extends BaseCaptureActivity {
 ##### 2.3 从界面A跳转到自定义扫描界面CustScanActivity
 然后在具备权限的情况下，你可以在`界面A`通过以下方法跳转到自定义扫描界面`CustScanActivity`：
 ```
+int requestCode=100;//请求code根据业务需求自定义
 //跳转扫描界面
-BaseCaptureActivity.startAct(Context context,Class<?>cls);
+BaseCaptureActivity.startAct(Context context,Class<?>cls,requestCode);
 ```
 ##### 2.4 自定义扫描界面CustScanActivity布局及扫描结果的处理
 在自定义扫描界面`CustScanActivity`中实现`getContentArray()`方法，类似如下：
@@ -169,7 +170,7 @@ BaseCaptureActivity.startAct(Context context,Class<?>cls);
     }
 ```
 - 当第二个参数为`true`时，表示扫描出结果后会立马关闭当前扫描界面，那么扫描结果会在`界面A`中处理，若是此种情况，
-你无需在`CustScanActivity`界面的`scanSuccess(String result, int width, int height)`和`scanFailed(String result, int width, int height)`
+你无需在`CustScanActivity`界面的`scanSuccess(int requestCode,String result, int width, int height)`和`scanFailed(int requestCode,String result, int width, int height)`
 中做任何逻辑处理。你需要在`界面A`中处理扫描返回结果。在`界面A`的`onActivityResult(int requestCode, int resultCode, @Nullable Intent data)`
 中做扫描结果的处理，你可以像下面这样：
 ```
@@ -177,7 +178,7 @@ BaseCaptureActivity.startAct(Context context,Class<?>cls);
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        BaseCaptureActivity.getCodeResult(requestCode, data, new OnScanResultListener() {
+        BaseCaptureActivity.getCodeResult(requestCode, resultCode,data, new OnScanResultListener() {
             @Override
             public void scanSuccess(String result, int width, int height) {
                //扫描结果成功的处理
@@ -193,17 +194,17 @@ BaseCaptureActivity.startAct(Context context,Class<?>cls);
     }
 ```
 - 当第二个参数为`false`时，表示扫描出结果后，不关闭扫描界面。这时你的扫描结果是在自定义扫描界面`CustScanActivity`中处理，而不是在`界面A`
-中处理。所以你要在自定义扫描界面`CustScanActivity`的`scanSuccess(String result, int width, int height)`和`scanFailed(String result, int width, int height)`
+中处理。所以你要在自定义扫描界面`CustScanActivity`的`scanSuccess(int requestCode,String result, int width, int height)`和`scanFailed(int requestCode,String result, int width, int height)`
 中做扫描成功和扫描失败的处理，类似如下：
 ```
     @Override
-    protected void scanSuccess(String result, int width, int height) {
+    protected void scanSuccess(int requestCode,String result, int width, int height) {
         //扫描成功的处理
         //...
     }
 
     @Override
-    protected void scanFailed(String result, int width, int height) {
+    protected void scanFailed(int requestCode,String result, int width, int height) {
         //扫描失败的处理
         //...
     }
@@ -217,6 +218,6 @@ BaseCaptureActivity.startAct(Context context,Class<?>cls);
 - setListener():设置控件监听
 - onClick(View v):实现点击按键处理逻辑
 - noAlbumPermission():用户拒绝权限的方法中调用此方法。并在此方法中处理用户拒绝授权的逻辑
-- scanSuccess(String result, int width, int height)和scanFailed(String result, int width, int height)：当扫描界面在`getContentArray()`
+- scanSuccess(int requestCode,String result, int width, int height)和scanFailed(int requestCode,String result, int width, int height)：当扫描界面在`getContentArray()`
 方法中第二个参数设置为`false`(即扫描结果的处理在扫描界面处理的时候)，用于做扫描结果成功或失败的处理
 
