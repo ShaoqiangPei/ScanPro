@@ -14,7 +14,7 @@ public class ScanActivity extends CaptureActivity {
 
     @Override
     protected boolean scanFinish() {
-        return false;
+        return true;
     }
 
     @Override
@@ -23,7 +23,7 @@ public class ScanActivity extends CaptureActivity {
     }
 
     @Override
-    protected void scanSuccess(String result,int width,int height) {
+    protected void scanSuccess(int requestCode,String result,int width,int height) {
         ScanUtil.i("=====扫描成功哈哈哈====result="+result);
 
         Toast.makeText(this,"扫描界面成功的结果: "+result,Toast.LENGTH_SHORT).show();
@@ -32,7 +32,7 @@ public class ScanActivity extends CaptureActivity {
     }
 
     @Override
-    protected void scanFailed(String result,int width,int height) {
+    protected void scanFailed(int requestCode,String result,int width,int height) {
         ScanUtil.i("=====扫描失pppppp败哈哈哈====result="+result);
 
         Toast.makeText(this,"扫描界面失败的结果: "+result,Toast.LENGTH_SHORT).show();

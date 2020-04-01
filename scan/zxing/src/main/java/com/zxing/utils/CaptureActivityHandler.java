@@ -62,7 +62,7 @@ public class CaptureActivityHandler extends Handler {
             state = State.SUCCESS;
             Bundle bundle = message.getData();
 
-            activity.handleDecode((Result) message.obj, bundle);
+            activity.handleDecode(((Result) message.obj).getText(), bundle);
 
         } else if (message.what == R.id.decode_failed) {// We're decoding as fast as possible, so when one
             // decode fails,

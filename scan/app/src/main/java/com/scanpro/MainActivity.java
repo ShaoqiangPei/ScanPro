@@ -62,12 +62,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-//                //跳转扫描界面
-//                BaseCaptureActivity.startAct(MainActivity.this, ScanActivity.class);
+                //跳转扫描界面
+                BaseCaptureActivity.startAct(MainActivity.this, ScanActivity.class,100);
 
 //                makeCode();
 
-                makeOp();
+//                makeOp();
             }
         });
     }
@@ -144,19 +144,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        //返回结果处理
-        BaseCaptureActivity.getCodeResult(resultCode, data, new OnScanResultListener() {
+        BaseCaptureActivity.getCodeResult(requestCode, resultCode, data, new OnScanResultListener() {
             @Override
-            public void scanSuccess(String result,int width,int height) {
-                Toast.makeText(MainActivity.this,"扫描结果: "+result,Toast.LENGTH_SHORT).show();
+            public void scanSuccess(String result, int width, int height) {
+                Toast.makeText(MainActivity.this, "扫描结果: " + result+"   requestCode="+requestCode, Toast.LENGTH_SHORT).show();
                 mTvResult.setText(result);
             }
 
             @Override
-            public void scanFailed(String result,int width,int height) {
-                Toast.makeText(MainActivity.this,"扫描错误",Toast.LENGTH_SHORT).show();
+            public void scanFailed(String result, int width, int height) {
+                Toast.makeText(MainActivity.this,"扫描错误"+"   requestCode="+requestCode,Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 }

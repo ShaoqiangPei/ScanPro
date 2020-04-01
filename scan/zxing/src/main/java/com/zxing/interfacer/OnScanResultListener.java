@@ -8,6 +8,6 @@ package com.zxing.interfacer;
  */
 public interface OnScanResultListener {
 
-    void scanSuccess(String result,int width,int height);
-    void scanFailed(String result,int width,int height);
+    void scanSuccess(String result,int width,int height);//扫描成功
+    void scanFailed(String result,int width,int height);//扫描失败
 }

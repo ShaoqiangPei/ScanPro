@@ -71,6 +71,7 @@ public abstract class BaseCaptureActivity extends AppCompatActivity implements V
     protected boolean isHasSurface = false;
 
     private boolean isScanedFinish=true;//扫描后是否关闭当前界面,默认为true，即关闭。
+    private static int mRequestCode;
 
     public Handler getHandler() {
         return handler;
@@ -171,13 +172,8 @@ public abstract class BaseCaptureActivity extends AppCompatActivity implements V
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //打开相册扫描的处理
-        if(requestCode== BaseCaptureActivity.REQUEST_GET_IMAGE){
-            if(resultCode== Activity.RESULT_OK){
-                decodePath(data);
-            }else{
-                //扫描照片失败
-                scanFailed(null,0,0);
-            }
+        if (requestCode == BaseCaptureActivity.REQUEST_GET_IMAGE && resultCode == Activity.RESULT_OK) {
+            decodePath(data);
         }
     }
 
@@ -220,7 +216,7 @@ public abstract class BaseCaptureActivity extends AppCompatActivity implements V
             @Override
             protected void onPostExecute(String result) {
                 super.onPostExecute(result);
-                handleDecode(result);
+                handleDecode(result,null);
             }
         }.execute();
     }
@@ -260,43 +256,26 @@ public abstract class BaseCaptureActivity extends AppCompatActivity implements V
      * A valid barcode has been found, so give an indication of success and show
      * the results.
      *
-     * @param rawResult The contents of the barcode.
+     * @param result The contents of the barcode.
      * @param bundle    The extras
      */
-    public void handleDecode(Result rawResult, Bundle bundle) {
+    public void handleDecode(String result, Bundle bundle) {
         inactivityTimer.onActivity();
         playEffect();
 
-        int width=mCropRect!=null?mCropRect.width():0;
-        int height=mCropRect!=null?mCropRect.height():0;
-
+        int width=0;
+        int height=0;
         Intent resultIntent = new Intent();
-        bundle.putInt(BaseCaptureActivity.CODE_WIDTH, width);
-        bundle.putInt(BaseCaptureActivity.CODE_HEIGHT, height);
-        bundle.putString(BaseCaptureActivity.CODE_RESULT, rawResult.getText());
-        resultIntent.putExtras(bundle);
-        if(isScanedFinish) {
-            this.setResult(RESULT_OK, resultIntent);
-            this.finish();
+        if(bundle!=null) {
+            //扫描实物得到结果
+            width = mCropRect != null ? mCropRect.width() : width;
+            height = mCropRect != null ? mCropRect.height() : height;
         }else{
-            String result=rawResult.getText();
-            if(TextUtils.isEmpty(result)){//扫描失败
-                scanFailed(result,width,height);
-            }else{//扫描成功
-                scanSuccess(result,width,height);
-            }
-            restartPreviewAfterDelay(2000);
+            //扫描相册二维码得到结果
+            bundle=new Bundle();
         }
-    }
-
-    public void handleDecode(String result){
-        inactivityTimer.onActivity();
-        playEffect();
-
-        Intent resultIntent = new Intent();
-        Bundle bundle=new Bundle();
-        bundle.putInt(BaseCaptureActivity.CODE_WIDTH, 0);
-        bundle.putInt(BaseCaptureActivity.CODE_HEIGHT, 0);
+        bundle.putInt(BaseCaptureActivity.CODE_WIDTH, width);
+        bundle.putInt(BaseCaptureActivity.CODE_HEIGHT, width);
         bundle.putString(BaseCaptureActivity.CODE_RESULT, result);
         resultIntent.putExtras(bundle);
         if(isScanedFinish) {
@@ -304,9 +283,9 @@ public abstract class BaseCaptureActivity extends AppCompatActivity implements V
             this.finish();
         }else{
             if(TextUtils.isEmpty(result)){//扫描失败
-                scanFailed(result,0,0);
+                scanFailed(mRequestCode,result,width,height);
             }else{//扫描成功
-                scanSuccess(result,0,0);
+                scanSuccess(mRequestCode,result,width,height);
             }
             restartPreviewAfterDelay(2000);
         }
@@ -440,9 +419,9 @@ public abstract class BaseCaptureActivity extends AppCompatActivity implements V
     protected abstract void noAlbumPermission();
 
     /**扫描成功返回的处理**/
-    protected abstract void scanSuccess(String result,int width,int height);
+    protected abstract void scanSuccess(int requestCode,String result,int width,int height);
     /**扫描失败返回的处理**/
-    protected abstract void scanFailed(String result,int width,int height);
+    protected abstract void scanFailed(int requestCode,String result,int width,int height);
 
 
     /***
@@ -481,22 +460,26 @@ public abstract class BaseCaptureActivity extends AppCompatActivity implements V
     }
 
     /**默认跳转**/
-    public static void startAct(Context context,Class<?>cls){
+    public static void startAct(Context context,Class<?>cls,int requestCode){
+        mRequestCode=requestCode;
         Intent intent=new Intent(context, cls);
-        ((AppCompatActivity)context).startActivityForResult(intent, BaseCaptureActivity.REQUEST_GET_CODE);
+        ((AppCompatActivity)context).startActivityForResult(intent, requestCode);
     }
 
     /**获取二维码内容**/
-    public static void getCodeResult(int resultCode, Intent data, OnScanResultListener listener) {
-        if (resultCode == Activity.RESULT_OK) {
+    public static void getCodeResult(int requestCode,int resultCode, Intent data, OnScanResultListener listener) {
+        ScanUtil.i("====getCodeResult======requestCode="+requestCode+"   resultCode="+resultCode);
+        if (requestCode == mRequestCode && resultCode == Activity.RESULT_OK) {
             Bundle bundle = data.getExtras();
             String result = bundle.getString(BaseCaptureActivity.CODE_RESULT, null);
-            int width=bundle.getInt(BaseCaptureActivity.CODE_WIDTH,0);
-            int height=bundle.getInt(BaseCaptureActivity.CODE_HEIGHT,0);
+            int width = bundle.getInt(BaseCaptureActivity.CODE_WIDTH, 0);
+            int height = bundle.getInt(BaseCaptureActivity.CODE_HEIGHT, 0);
             if (TextUtils.isEmpty(result)) {//扫描结果出错
-                listener.scanFailed(result,width,height);
+                ScanUtil.i("=====扫描结果出错===result=" + result + "  width=" + width + "  height=" + height);
+                listener.scanFailed(result, width, height);
             } else {//扫描成功
-                listener.scanSuccess(result,width,height);
+                ScanUtil.i("=====扫描成功===result=" + result + "  width=" + width + "  height=" + height);
+                listener.scanSuccess(result, width, height);
             }
         }
     }
