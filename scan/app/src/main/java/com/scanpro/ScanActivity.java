@@ -14,7 +14,7 @@ public class ScanActivity extends CaptureActivity {
 
     @Override
     protected boolean scanFinish() {
-        return true;
+        return false;
     }
 
     @Override
@@ -25,6 +25,7 @@ public class ScanActivity extends CaptureActivity {
     @Override
     protected void scanSuccess(int requestCode,String result,int width,int height) {
         ScanUtil.i("=====扫描成功哈哈哈====result="+result);
+        ScanUtil.i("=====扫描成功哈哈哈====result.length()="+result.length());
 
         Toast.makeText(this,"扫描界面成功的结果: "+result,Toast.LENGTH_SHORT).show();
 

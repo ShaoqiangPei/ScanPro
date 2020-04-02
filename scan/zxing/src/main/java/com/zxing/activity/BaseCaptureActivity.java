@@ -28,6 +28,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.zxing.Result;
+import com.google.zxing.common.StringUtils;
 import com.zxing.R;
 import com.zxing.camera.CameraManager;
 import com.zxing.decode.DecodeThread;
@@ -276,6 +277,9 @@ public abstract class BaseCaptureActivity extends AppCompatActivity implements V
         }
         bundle.putInt(BaseCaptureActivity.CODE_WIDTH, width);
         bundle.putInt(BaseCaptureActivity.CODE_HEIGHT, width);
+        if(!TextUtils.isEmpty(result)){
+            result=result.trim();//去掉扫描出的空格
+        }
         bundle.putString(BaseCaptureActivity.CODE_RESULT, result);
         resultIntent.putExtras(bundle);
         if(isScanedFinish) {
@@ -456,7 +460,6 @@ public abstract class BaseCaptureActivity extends AppCompatActivity implements V
         if(cameraManager!=null){
             cameraManager.flashHandler();
         }
-
     }
 
     /**默认跳转**/
