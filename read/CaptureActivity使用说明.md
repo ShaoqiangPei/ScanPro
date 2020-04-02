@@ -40,12 +40,12 @@ public class ScanActivity extends CaptureActivity {
     }
 
     @Override
-    protected void scanSuccess(String result, int width, int height) {
+    protected void scanSuccess(int requestCode,String result, int width, int height) {
         LogUtil.i("======扫描success的结果====result="+result);
     }
 
     @Override
-    protected void scanFailed(String result, int width, int height) {
+    protected void scanFailed(int requestCode,String result, int width, int height) {
         LogUtil.i("======扫描failed的结果====result="+result);
     }
 }
@@ -60,11 +60,11 @@ public class ScanActivity extends CaptureActivity {
 然后在具备权限的情况下，你可以在`界面A`通过以下方法跳转到定制版扫描界面`ScanActivity`：
 ```
 //跳转扫描界面
-BaseCaptureActivity.startAct(Context context,Class<?>cls);
+BaseCaptureActivity.startAct(Context context,Class<?>cls,int requestCode);
 ```
 ##### 3.4 定制版扫描界面ScanActivity中几个方法的解释
 - scanFinish():返回`true`表示扫描出结果后会立马关闭当前扫描界面，那么扫描结果会在`界面A`中处理，若是此种情况，
-你无需在`ScanActivity`界面的`scanSuccess(String result, int width, int height)`和`scanFailed(String result, int width, int height)`
+你无需在`ScanActivity`界面的`scanSuccess(int requestCode,String result, int width, int height)`和`scanFailed(int requestCode,String result, int width, int height)`
 中做任何逻辑处理。你需要在`界面A`中处理扫描返回结果。在`界面A`的`onActivityResult(int requestCode, int resultCode, @Nullable Intent data)`
 中做扫描结果的处理，你可以像下面这样：
 ```
@@ -72,7 +72,7 @@ BaseCaptureActivity.startAct(Context context,Class<?>cls);
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        BaseCaptureActivity.getCodeResult(requestCode, data, new OnScanResultListener() {
+        BaseCaptureActivity.getCodeResult(requestCode,resultCode,data, new OnScanResultListener() {
             @Override
             public void scanSuccess(String result, int width, int height) {
                //扫描结果成功的处理
@@ -88,16 +88,16 @@ BaseCaptureActivity.startAct(Context context,Class<?>cls);
     }
 ```
 返回`false`表示扫描出结果后，不关闭扫描界面。这时你的扫描结果是在定制版扫描界面`ScanActivity`中处理，而不是在`界面A`
-中处理。所以你要在定制版扫描界面`ScanActivity`的`scanSuccess(String result, int width, int height)`和`scanFailed(String result, int width, int height)`中做扫描成功和扫描失败的处理，类似如下：
+中处理。所以你要在定制版扫描界面`ScanActivity`的`scanSuccess(int resultCode,String result, int width, int height)`和`scanFailed(int resultCode,String result, int width, int height)`中做扫描成功和扫描失败的处理，类似如下：
 ```
     @Override
-    protected void scanSuccess(String result, int width, int height) {
+    protected void scanSuccess(int resultCode,String result, int width, int height) {
         //扫描成功的处理
         //...
     }
 
     @Override
-    protected void scanFailed(String result, int width, int height) {
+    protected void scanFailed(int resultCode,String result, int width, int height) {
         //扫描失败的处理
         //...
     }
