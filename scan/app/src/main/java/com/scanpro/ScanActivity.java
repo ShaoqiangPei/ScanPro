@@ -18,6 +18,14 @@ public class ScanActivity extends CaptureActivity {
     }
 
     @Override
+    protected void initData() {
+        super.initData();
+
+//        //设置相册按钮不显示
+//        setImvAlbumVisibility(false);
+    }
+
+    @Override
     protected void noAlbumPermission() {
         ScanUtil.i("=====无权限=====");
     }

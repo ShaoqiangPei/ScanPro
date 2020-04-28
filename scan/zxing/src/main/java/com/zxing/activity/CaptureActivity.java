@@ -51,6 +51,11 @@ public abstract class CaptureActivity extends BaseCaptureActivity {
      */
     protected abstract boolean scanFinish();
 
+    /**设置相册按钮可见性**/
+    protected void setImvAlbumVisibility(boolean isShow){
+        mImvAlbum.setVisibility(isShow ? View.VISIBLE : View.GONE);
+    }
+
     @Override
     protected void initView(){
         mImvBack = findViewById(R.id.imv_back);
@@ -91,14 +96,16 @@ public abstract class CaptureActivity extends BaseCaptureActivity {
 
     @Override
     public void onClick(View v) {
-       if(v.getId()==R.id.imv_back){//返回
-           this.finish();
-       }else if(v.getId()==R.id.imv_album){//相册
-           //申请读写授权
-           CaptureActivityPermissionsDispatcher.requestPermissionWithPermissionCheck(CaptureActivity.this);
-       }else if(v.getId()==R.id.imv_light) {//闪光灯
-           changeFlashLight();
-       }
+        if (v.getId() == R.id.imv_back) {//返回
+            this.finish();
+        } else if (v.getId() == R.id.imv_album) {//相册
+            if (mImvAlbum.getVisibility() == View.VISIBLE) {
+                //申请读写授权
+                CaptureActivityPermissionsDispatcher.requestPermissionWithPermissionCheck(CaptureActivity.this);
+            }
+        } else if (v.getId() == R.id.imv_light) {//闪光灯
+            changeFlashLight();
+        }
     }
 
     /**申请权限**/
