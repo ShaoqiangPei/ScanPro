@@ -63,13 +63,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //跳转扫描界面
-//                BaseCaptureActivity.startAct(MainActivity.this, ScanActivity.class,100);
-
-                Intent intent=new Intent(MainActivity.this,Main2Activity.class);
-                startActivity(intent);
+                BaseCaptureActivity.startAct(MainActivity.this, ScanActivity.class,100);
 
 //                makeCode();
-
 //                makeOp();
             }
         });

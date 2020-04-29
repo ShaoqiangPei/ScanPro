@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -59,6 +60,7 @@ public abstract class BaseCaptureActivity extends AppCompatActivity implements V
     private static final int REQUEST_GET_CODE=0;//扫描请求code
     public static final int REQUEST_GET_IMAGE=1;//相册code
 
+    protected View mLayoutView;//总布局
     protected SurfaceView mSurfaceView;
 
     protected Camera mCamera;
@@ -96,7 +98,9 @@ public abstract class BaseCaptureActivity extends AppCompatActivity implements V
                     ScanUtil.i("====layoutId=====object[0].toString()===="+object[0].toString());
                     ScanUtil.i("====layoutId=====object[0]===="+object[0]);
                     ScanUtil.i("====layoutId=====layoutId===="+layoutId);
-                    setContentView(layoutId);
+
+                    mLayoutView= LayoutInflater.from(BaseCaptureActivity.this).inflate(layoutId, null);
+                    setContentView(mLayoutView);
                     initView();
                     initData();
                     setListener();
