@@ -7,6 +7,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 /**
@@ -24,11 +26,11 @@ public class ScanLayout extends ConstraintLayout {
     private float mSideWidth=20f;//角边长宽度
 
     public ScanLayout(Context context) {
-        super(context);
+        this(context,null);
     }
 
     public ScanLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs,0);
     }
 
     public ScanLayout(Context context, AttributeSet attrs, int defStyleAttr) {
