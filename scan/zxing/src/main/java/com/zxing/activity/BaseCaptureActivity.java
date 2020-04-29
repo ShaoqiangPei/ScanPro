@@ -96,7 +96,7 @@ public abstract class BaseCaptureActivity extends AppCompatActivity implements V
                     ScanUtil.i("====layoutId=====object[0].toString()===="+object[0].toString());
                     ScanUtil.i("====layoutId=====object[0]===="+object[0]);
                     ScanUtil.i("====layoutId=====layoutId===="+layoutId);
-                    setContentView(layoutId);
+                    setContentView(R.layout.activity_capture);
                     initView();
                     initData();
                     setListener();
