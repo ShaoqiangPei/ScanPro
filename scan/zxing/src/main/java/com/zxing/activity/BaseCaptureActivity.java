@@ -93,6 +93,9 @@ public abstract class BaseCaptureActivity extends AppCompatActivity implements V
             try {
                 if(object[0]!=null) {
                     int layoutId = Integer.valueOf(object[0].toString());
+                    ScanUtil.i("====layoutId=====object[0].toString()===="+object[0].toString());
+                    ScanUtil.i("====layoutId=====object[0]===="+object[0]);
+                    ScanUtil.i("====layoutId=====layoutId===="+layoutId);
                     setContentView(layoutId);
                     initView();
                     initData();
