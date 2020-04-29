@@ -19,7 +19,7 @@ public class Damo extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_capture);
+        setContentView(R.layout.dame);
 
         ScanUtil.i("========我是demo log======");
     }
