@@ -105,6 +105,11 @@ BaseCaptureActivity.startAct(Context context,Class<?>cls,int requestCode);
 - noAlbumPermission():当用户拒绝授权`打开相册`权限的处理
 - scanSuccess(String result, int width, int height)和scanFailed(String result, int width, int height):当`scanFinish()`返回参数为
 `false`(即扫描到结果后不立即关闭扫描界面)时，扫描结果成功和失败的处理逻辑。
+- setImvAlbumVisibility(boolean isShow): 设置相册按钮可见性。当你不想让相册按钮显示的时候，你可以像下面这样设置：
+```
+  setImvAlbumVisibility(false);
+```
+**默认情况下，相册按钮是显示的**
 #### 四. 微调定制版扫描界面参数
 以修改扫描界面返回键文字为例，可以在`ScanActivity`中重载其父类`CaptureActivity`的`initData()`方法，并在其中修改返回键文字，类似下面这样:
 ```
